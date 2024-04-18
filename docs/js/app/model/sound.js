@@ -101,7 +101,10 @@ export default class Sound {
   }
 
   setMidiVolume(midiVolume) {
-    this.setVolume(midiVolume/127.);
+    //console.log((midiVolume-64)/100);
+    if(midiVolume != 64) {
+      this.setVolume(this._volume + (midiVolume-64)/100);
+    }
   }
 
   setVolume(volume) {
