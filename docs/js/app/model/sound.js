@@ -14,7 +14,7 @@ export default class Sound {
     this._playing = false;
     this._alive = true;
     this._button_div = null;
-    this._volume = 1.;
+    this._volume = 1;
   }
 
   _loadPlayer() {
@@ -151,7 +151,7 @@ export default class Sound {
       playMode: this._playMode,
       key: this._key,
       control: this._control,
-      volume: this._volume,
+      //volume: this._volume,
       file: this._mp3File.toStorageObject(),
     };
   }
@@ -162,7 +162,7 @@ export default class Sound {
     sound.playMode = obj.playMode;
     sound.key = obj.key;
     sound.control = obj.control;
-    sound.volume = obj.volume;
+    //sound.volume = obj.volume;
     sound.mp3File = Mp3File.fromStorageObject(obj.file);
     return sound;
   }
