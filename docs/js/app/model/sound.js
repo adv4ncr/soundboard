@@ -14,6 +14,7 @@ export default class Sound {
     this._playing = false;
     this._alive = true;
     this._button_div = null;
+    this._volume = 1.;
   }
 
   _loadPlayer() {
@@ -23,7 +24,6 @@ export default class Sound {
       this._player.addEventListener("ended", () => this._stopAnimation());
       requestAnimationFrame(() => this._renderProgress());
       this._playerLoaded = true;
-      // this._button_div = document.querySelector(`div.sound[data-x='${this.x}'][data-y='${this.y}']`);
     }
   }
 
@@ -72,24 +72,46 @@ export default class Sound {
     this._key = key || this._key;
   }
 
+  set control(control) {
+    this._control = control || this._control;
+  }
+
   set playMode(playMode) {
     this._playMode = playMode || this._playMode;
   }
 
+  set volume(volume) {
+    this._volume = volume || this._volume;
+  }
+  
   setPlayModeRetrigger() {
     this._playMode = PlayMode.Retrigger;
   }
-
+  
   setPlayModeOneShot() {
     this._playMode = PlayMode.OneShot;
   }
-
+  
   setPlayModeGate() {
     this._playMode = PlayMode.Gate;
   }
+  
+  setVolumeIncrement(increment) {
+    this.setVolume(this._volume + increment);
+  }
+
+  setMidiVolume(midiVolume) {
+    this.setVolume(midiVolume/127.);
+  }
 
   setVolume(volume) {
+    if (volume > 1) volume = 1;
+    else if (volume < 0) volume = 0;
+    this._volume = volume;
     this._player.volume = volume;
+    if (!this._alive) return;
+    const progress = document.querySelector(`div.sound[data-x='${this.x}'][data-y='${this.y}'] .volume .bar`);
+    progress?.style.setProperty("background", `linear-gradient(90deg, white 0%, white ${volume*100}%, rgba(255,255,255,0.3) ${volume*100}%, rgba(255,255,255,0.3) 100%)`);
   }
 
   // Getters
@@ -110,6 +132,14 @@ export default class Sound {
     return this._key;
   }
 
+  get control() {
+    return this._control;
+  }
+
+  get volume() {
+    return this._volume;
+  }
+
   // Saving and loading
 
   toStorageObject() {
@@ -117,6 +147,8 @@ export default class Sound {
       colour: this._colour,
       playMode: this._playMode,
       key: this._key,
+      control: this._control,
+      volume: this._volume,
       file: this._mp3File.toStorageObject(),
     };
   }
@@ -126,6 +158,8 @@ export default class Sound {
     sound.colour = obj.colour;
     sound.playMode = obj.playMode;
     sound.key = obj.key;
+    sound.control = obj.control;
+    sound.volume = obj.volume;
     sound.mp3File = Mp3File.fromStorageObject(obj.file);
     return sound;
   }

@@ -67,6 +67,9 @@ midi.register({
   keyDown: (key) => board.getByKey(key)?.push(),
   keyUp: (key) => board.getByKey(key)?.release(),
 });
+midi.registerControlChange({
+  controlChange: (controller, value) => board.getByControl(controller)?.setMidiVolume(value)
+});
 keyboard.register({
   keyDown: (key) => board.getByKey(key)?.push(),
   keyUp: (key) => board.getByKey(key)?.release(),
@@ -76,6 +79,19 @@ keyboard.register({
 document.getElementById("volume").addEventListener("input", (e) => {
   volume = e.target.value;
   board.allSounds().forEach((s) => s.setVolume(volume));
+});
+
+document.addEventListener("wheel", (e) => {
+  if (!e.target.classList.contains("sound")) return;
+  var vol = 0;
+  if (e.deltaX != 0) {
+    const f = Math.abs(e.deltaX) > 100 ? 0.1 : 0.01;
+    vol = e.deltaX > 0 ? f : -f;
+  } else if (e.deltaY != 0) {
+    const f = Math.abs(e.deltaY) > 100 ? 0.1 : 0.01;
+    vol = e.deltaY > 0 ? -f : f;
+  }
+  soundFromEvent(e)?.setVolumeIncrement(vol);
 });
 
 // "Navigation" buttons
@@ -154,6 +170,18 @@ clickHandler.register("button.assign-key", (e) => {
     })
     .finally(() => {
       keyboard.cancelGetKeyPress();
+      midi.cancelGetKeyPress();
+      boardRenderer.render(board);
+      saveBoard();
+    });
+});
+clickHandler.register("button.assign-control", (e) => {
+  show(e, ".keys");
+  Promise.race([midi.getNextKeyPress()])
+    .then((control) => {
+      soundFromEvent(e).control = control;
+    })
+    .finally(() => {
       midi.cancelGetKeyPress();
       boardRenderer.render(board);
       saveBoard();

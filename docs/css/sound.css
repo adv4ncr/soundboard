@@ -30,6 +30,7 @@
   /* Please don't catch click / drag events */
   & .progress,
   & .props,
+  & .volume,
   & .settings,
   h1,
   p {
@@ -49,12 +50,13 @@
 
     & .bar {
       position: absolute;
-      top: 35%;
-      left: 5%;
+      /* top: 35%; */
+      /* left: 5%; */
       height: 8px;
-      width: 90%;
+      width: 100%;
       padding: 0;
       background: white;
+      border-radius: 4px;
     }
   }
 
@@ -75,6 +77,28 @@
       padding: 0.5em 0;
       margin: 0;
       user-select: none;
+    }
+  }
+
+  /* Visual volume indicator */
+  & .volume {
+    flex: 1 1;
+    display: block;
+    position: relative;
+
+    body.settings & {
+      display: none;
+    }
+
+    & .bar {
+      position: absolute;
+      bottom: 0%;
+      /* left: 5%; */
+      height: 8px;
+      width: 100%;
+      padding: 0;
+      background: white;
+      border-radius: 4px;
     }
   }
 
@@ -162,6 +186,15 @@
 
         &:not(.assigned):before {
           content: "⌨︎";
+          margin-left: -2px;
+        }
+      }
+
+      &.assign-control {
+        border-color: var(--play-mode-button-border-active);
+
+        &:not(.assigned):before {
+          content: "⚙️";
           margin-left: -2px;
         }
       }

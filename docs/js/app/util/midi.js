@@ -30,6 +30,10 @@ export default class Midi {
     this._keyUp = keyUp;
   }
 
+  registerControlChange({controlChange}) {
+    this._controlChange = controlChange;
+  }
+
   getNextKeyPress() {
     return new Promise((resolve, reject) => {
       this._resolve = resolve;
@@ -50,6 +54,7 @@ export default class Midi {
 
       if (command === 144 && velocity > 0) this._keyDownHandler(note);
       if ((command === 144 && velocity < 0) || command === 128) this._keyUpHandler(note);
+      if (command === 176) this._controlChangeHandler(note, velocity);
     });
   }
 
@@ -65,4 +70,13 @@ export default class Midi {
   _keyUpHandler(note) {
     if (this._keyUp) this._keyUp(note);
   }
+
+  _controlChangeHandler(controller, value) {
+    // console.log("midi_cc: %d %d", controller, value);
+    if (this._resolve) {
+      this._resolve(controller);
+      return this.cancelGetKeyPress();
+    }
+    if (this._controlChange) this._controlChange(controller, value)
+  };
 }

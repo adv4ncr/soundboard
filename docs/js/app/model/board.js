@@ -75,6 +75,10 @@ export default class Board {
     return this._grid.flat().find((s) => s && s.key === key);
   }
 
+  getByControl(control) {
+    return this._grid.flat().find((s) => s && s.control === control);
+  }
+
   allSounds() {
     return this._grid.flat().filter((s) => s);
   }

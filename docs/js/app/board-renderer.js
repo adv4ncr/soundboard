@@ -67,6 +67,9 @@ export default class BoardRenderer {
                 <button class='assign-key ${
                   sound.key ? "assigned" : ""
                 }' title="Assign trigger button">${sound.key ? sound.key : ""}</button>
+                <button class='assign-control ${
+                  sound.control ? "assigned" : ""
+                }' title="Assign volume control">${sound.control ? sound.control : ""}</button>
                 <div class='keys'>
                   Press a key...
                 </div>
@@ -85,6 +88,7 @@ export default class BoardRenderer {
                   : ""
               }
             </div>
+            ${sound ? `<div class='volume'><div class='bar'></div></div>`:""}
           </div>
         `;
       }
