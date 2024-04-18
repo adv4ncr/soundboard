@@ -77,7 +77,7 @@ keyboard.register({
 
 // Let the volume slider control the volume
 document.getElementById("volume").addEventListener("input", (e) => {
-  volume = e.target.value;
+  volume = Number(e.target.value);
   board.allSounds().forEach((s) => s.setVolume(volume));
 });
 
