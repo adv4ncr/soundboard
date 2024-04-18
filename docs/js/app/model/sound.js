@@ -13,6 +13,7 @@ export default class Sound {
     this._playerLoaded = false;
     this._playing = false;
     this._alive = true;
+    this._button_div = null;
   }
 
   _loadPlayer() {
@@ -22,6 +23,7 @@ export default class Sound {
       this._player.addEventListener("ended", () => this._stopAnimation());
       requestAnimationFrame(() => this._renderProgress());
       this._playerLoaded = true;
+      // this._button_div = document.querySelector(`div.sound[data-x='${this.x}'][data-y='${this.y}']`);
     }
   }
 
@@ -32,10 +34,15 @@ export default class Sound {
 
   _startAnimation() {
     this._playing = true;
+    const _div = document.querySelector(`div.sound[data-x='${this.x}'][data-y='${this.y}']`);
+    _div.classList.add("playingState");
   }
-
+  
   _stopAnimation() {
     this._playing = false;
+    // this._button_div.classList.remove("playingState");
+    const _div = document.querySelector(`div.sound[data-x='${this.x}'][data-y='${this.y}']`);
+    _div.classList.remove("playingState");
   }
 
   _renderProgress() {
@@ -46,7 +53,7 @@ export default class Sound {
       `div.sound[data-x='${this.x}'][data-y='${this.y}'] .progress .bar`
     );
     const percentage = (this._player.currentTime / this._player.duration) * 100;
-    progress.style.background = `linear-gradient(90deg, white 0%, white ${percentage}%, rgba(255,255,255,0.4) ${percentage}%, rgba(255,255,255,0.4) 100%)`;
+    progress.style.background = `linear-gradient(90deg, white 0%, white ${percentage}%, rgba(255,255,255,0.3) ${percentage}%, rgba(255,255,255,0.3) 100%)`;
     requestAnimationFrame(() => this._renderProgress());
   }
 
